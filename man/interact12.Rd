@@ -2,7 +2,8 @@
 % Please edit documentation in R/interact12.R
 \name{interact12}
 \alias{interact12}
-\title{Extract regression model data for 2 way interaction (predictor 1 & 2)}
+\title{Extract 3-way interaction regression model data
+(interaction between predictor 1 & 2)}
 \usage{
 interact12(lm)
 }
@@ -14,8 +15,8 @@ beta, se, t-value, p-value, ci95_low, ci95_high
 }
 \description{
 Pull the regression coefficient, standard error, t-value, p-value and confidence
-interval for the two way interaction between the first and second predictors
-specified in your linear model.
+interval for the interaction between the first and second predictors
+specified in your linear model. Linear model must have 3+ predictors to work.
 }
 \examples{
 example <- lm(formula = Sepal.Length ~ Petal.Length * Petal.Width * Sepal.Width, data = iris)
