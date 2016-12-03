@@ -14,7 +14,7 @@
 #' interact12(example)
 interact12 <- function(lm) {
   modelsum <- summary(lm)
-  modelci <- confint(lm, level = 0.95, method = "boot")
+  modelci <- stats::confint(lm, level = 0.95, method = "boot")
   end <- nrow(modelsum$coefficients)
   out <- c(modelsum$coefficients[(end - 3)],
            modelsum$coefficients[(end - 3),2],
