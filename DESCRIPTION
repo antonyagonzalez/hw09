@@ -22,3 +22,5 @@ Suggests: testthat,
 Imports: stats,
     dplyr
 VignetteBuilder: knitr
+URL: https://github.com/antonyagonzalez/hw09
+BugReports: https://github.com/antonyagonzalez/hw09/issues
