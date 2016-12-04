@@ -1,0 +1,98 @@
+---
+title: "Hello hw09"
+author: "antonyagonzalez"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+##Package Description
+
+The purpose of this mini package is to make life easier when dealing with long tedious regression output and get what you need from it. Eventually, this package will become a larger, more useful package with many extraction functions.
+
+In the examples below, I will work with the iris data to show you what the functions in this package do. NOTE: I have not standardized the variables below, so the resulting betas will not be correctly standardized.
+
+```{r}
+library(hw09)
+library(dplyr)
+```
+
+
+
+##Extract information for a three-way interaction
+
+NOTE: This function will only work if you have 3 predictors or more in your model, and only up to a three-way interaction. Four-way interactions are a terrible idea anyway, don't do them.
+
+Let's say I am running a regression model with a predicted three-way interaction between petal length, petal width, and sepal width predicting sepal length. After standardizing the variables of interest, I would use the linear model below.
+
+```{r}
+example <- lm(formula = Sepal.Length ~ Petal.Length * Petal.Width * Sepal.Width, data = iris)
+```
+
+Normally the summary output would be as follows:
+
+```{r}
+summary(example)
+```
+
+But that's a lot of information to look through, and can be kind of a headache when trying to write up a paper. What if all I care about is knowing the information about the three-way interaction?
+
+Instead of the summary, I will use interact3(). It will even give me the confidence intervals for the regression coefficient as well.
+
+```{r}
+interact3(example)
+```
+
+Much easier to read and work with.
+
+##Extract information for the interaction between predictors 1 & 2.
+
+Now let's say I am working with the same model as above, but at the moment, I really only care about whether or not there is an interaction between petal length and petal width predicting sepal length.
+
+This is where I would use interact12()
+
+```{r}
+interact12(example)
+```
+
+##Meta-analyzing standard regression coefficients
+
+The third (and final, for now) function in this package meta-analyzes standardized regression coefficients that you input by hand.
+
+Let's say I only cared about the setosa and versicolor species, and wanted to conduct a meta-analysis of the relationship between petal length, petal width, and sepal width predicting sepal length for those two species.
+
+```{r}
+setosa <- filter(iris, Species == "setosa")
+setosa_model <- lm(formula = Sepal.Length ~ Petal.Length * Petal.Width * Sepal.Width, data = setosa)
+
+versicolor <- filter(iris, Species == "versicolor")
+versicolor_model <- lm(formula = Sepal.Length ~ Petal.Length * Petal.Width * Sepal.Width, data = versicolor)
+```
+
+First, I will extract the betas I care about.
+
+```{r}
+interact3(setosa_model)
+
+interact3(versicolor_model)
+```
+
+Now, I will meta-analyze them.
+
+
+```{r}
+metabeta(b1 = 5.42, se1 = 6.23, b2 = 1.18, se2 = 2.20)
+```
+
+Another shortcut to doing this is below:
+
+```{r}
+setosa_beta <- interact3(setosa_model)
+versicolor_beta <- interact3(versicolor_model)
+
+metabeta(b1 = setosa_beta[[1]], se1 = setosa_beta[[2]], b2 = versicolor_beta[[1]], se2 = versicolor_beta[[2]])
+```
+
